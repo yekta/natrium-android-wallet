@@ -4,8 +4,8 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
@@ -34,10 +34,6 @@ import co.banano.natriumwallet.ui.webview.WebViewDialogFragment;
 import co.banano.natriumwallet.util.SharedPreferencesUtil;
 import com.hwangjr.rxbus.annotation.Subscribe;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Locale;
 import java.util.UUID;
 
@@ -45,12 +41,9 @@ import javax.inject.Inject;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
-import timber.log.Timber;
 
 public class MainActivity extends AppCompatActivity implements WindowControl, ActivityWithComponent {
     protected ActivityComponent mActivityComponent;
-
-    public static boolean appInForeground = false;
 
     @Inject
     Realm realm;
@@ -65,7 +58,6 @@ public class MainActivity extends AppCompatActivity implements WindowControl, Ac
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        appInForeground = true;
 
         clearNotificationPrefCache();
 
@@ -110,6 +102,9 @@ public class MainActivity extends AppCompatActivity implements WindowControl, Ac
             sharedPreferencesUtil.setDefaultContactAdded();
         }
 
+        // Set app in foreground
+        sharedPreferencesUtil.setAppBackgrounded(false);
+
         initUi();
     }
 
@@ -123,7 +118,7 @@ public class MainActivity extends AppCompatActivity implements WindowControl, Ac
     @Override
     protected void onPause() {
         super.onPause();
-        appInForeground = false;
+        sharedPreferencesUtil.setAppBackgrounded(true);
         // stop websocket on pause
         if (accountService != null) {
             accountService.close();
@@ -133,7 +128,7 @@ public class MainActivity extends AppCompatActivity implements WindowControl, Ac
     @Override
     protected void onResume() {
         super.onResume();
-        appInForeground = true;
+        sharedPreferencesUtil.setAppBackgrounded(false);
         clearNotificationPrefCache();
         // start websocket on resume
         if (accountService != null && realm != null && !realm.isClosed() && realm.where(Credentials.class).findFirst() != null) {
@@ -144,6 +139,7 @@ public class MainActivity extends AppCompatActivity implements WindowControl, Ac
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        sharedPreferencesUtil.setAppBackgrounded(true);
 
         // unregister from bus
         RxBus.get().unregister(this);

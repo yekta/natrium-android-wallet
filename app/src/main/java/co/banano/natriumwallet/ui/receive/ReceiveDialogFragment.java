@@ -2,7 +2,7 @@ package co.banano.natriumwallet.ui.receive;
 
 import android.content.Context;
 import android.content.Intent;
-import android.databinding.DataBindingUtil;
+import androidx.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -11,9 +11,9 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.Nullable;
-import android.support.graphics.drawable.VectorDrawableCompat;
-import android.support.v4.content.FileProvider;
+import androidx.annotation.Nullable;
+import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat;
+import androidx.core.content.FileProvider;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -31,6 +31,7 @@ import co.banano.natriumwallet.ui.common.ActivityWithComponent;
 import co.banano.natriumwallet.ui.common.BaseDialogFragment;
 import co.banano.natriumwallet.ui.common.SwipeDismissTouchListener;
 import co.banano.natriumwallet.ui.common.UIUtil;
+
 import com.github.sumimakito.awesomeqr.AwesomeQRCode;
 
 import java.io.File;
@@ -173,7 +174,6 @@ public class ReceiveDialogFragment extends BaseDialogFragment {
                             binding.receiveCard.cardBarcodeImg.setImageBitmap(bitmap);
                         });
                     }
-
                     @Override
                     public void onError(AwesomeQRCode.Renderer renderer, Exception e) {
                         e.printStackTrace();
